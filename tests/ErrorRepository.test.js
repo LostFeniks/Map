@@ -32,7 +32,7 @@ describe('ErrorRepository', () => {
       expect(codes).toContain(502);
       expect(codes).toContain(503);
       expect(codes).toContain(504);
-      expect(codes.length).toBe(12);
+      expect(codes).toHaveLength(12);
     });
   });
 
@@ -88,7 +88,9 @@ describe('ErrorRepository', () => {
 
     test('should throw error when code is invalid', () => {
       expect(() => errorRepo.addError(null, 'Description')).toThrow('Code must be a valid number');
-      expect(() => errorRepo.addError(undefined, 'Description')).toThrow('Code must be a valid number');
+      expect(() => errorRepo.addError(undefined, 'Description')).toThrow(
+        'Code must be a valid number'
+      );
       expect(() => errorRepo.addError('400', 'Description')).toThrow('Code must be a valid number');
       expect(() => errorRepo.addError(NaN, 'Description')).toThrow('Code must be a valid number');
       expect(() => errorRepo.addError({}, 'Description')).toThrow('Code must be a valid number');
@@ -97,9 +99,13 @@ describe('ErrorRepository', () => {
 
     test('should throw error when description is invalid', () => {
       expect(() => errorRepo.addError(418, null)).toThrow('Description must be a non-empty string');
-      expect(() => errorRepo.addError(418, undefined)).toThrow('Description must be a non-empty string');
+      expect(() => errorRepo.addError(418, undefined)).toThrow(
+        'Description must be a non-empty string'
+      );
       expect(() => errorRepo.addError(418, '')).toThrow('Description must be a non-empty string');
-      expect(() => errorRepo.addError(418, '   ')).toThrow('Description must be a non-empty string');
+      expect(() => errorRepo.addError(418, '   ')).toThrow(
+        'Description must be a non-empty string'
+      );
       expect(() => errorRepo.addError(418, 123)).toThrow('Description must be a non-empty string');
       expect(() => errorRepo.addError(418, {})).toThrow('Description must be a non-empty string');
     });
@@ -145,7 +151,7 @@ describe('ErrorRepository', () => {
       const errors = errorRepo.getAllErrors();
       expect(errors).toBeInstanceOf(Map);
       expect(errors.size).toBe(12);
-      
+
       errors.set(999, 'Test');
       expect(errorRepo.hasError(999)).toBe(false);
     });
@@ -172,7 +178,7 @@ describe('ErrorRepository', () => {
       errorRepo.addError(418, "I'm a teapot");
       errorRepo.addError(420, 'Enhance Your Calm');
       expect(errorRepo.getSize()).toBe(14);
-      
+
       errorRepo.clearAllErrors();
       expect(errorRepo.getSize()).toBe(12);
       expect(errorRepo.hasError(418)).toBe(false);
@@ -204,7 +210,7 @@ describe('ErrorRepository', () => {
     test('should return array of all error codes', () => {
       const codes = errorRepo.getAllErrorCodes();
       expect(Array.isArray(codes)).toBe(true);
-      expect(codes.length).toBe(12);
+      expect(codes).toHaveLength(12);
       expect(codes).toContain(400);
       expect(codes).toContain(404);
       expect(codes).toContain(500);
@@ -214,7 +220,7 @@ describe('ErrorRepository', () => {
       errorRepo.addError(418, "I'm a teapot");
       const codes = errorRepo.getAllErrorCodes();
       expect(codes).toContain(418);
-      expect(codes.length).toBe(13);
+      expect(codes).toHaveLength(13);
     });
   });
 
@@ -233,17 +239,17 @@ describe('ErrorRepository', () => {
     test('should handle multiple operations correctly', () => {
       errorRepo.addError(418, "I'm a teapot");
       errorRepo.addError(429, 'Too Many Requests');
-      
+
       expect(errorRepo.translate(418)).toBe("I'm a teapot");
       expect(errorRepo.translate(429)).toBe('Too Many Requests');
       expect(errorRepo.translate(400)).toBe('Bad Request');
-      
+
       errorRepo.removeError(418);
       expect(errorRepo.hasError(418)).toBe(false);
       expect(errorRepo.translate(418)).toBe('Unknown error');
-      
+
       const allErrors = errorRepo.getAllErrors();
-      console.log('Actual size:', allErrors.size); 
+      console.log('Actual size:', allErrors.size);
       console.log('All error codes:', Array.from(allErrors.keys()));
       expect(allErrors.size).toBe(12);
     });
@@ -251,7 +257,7 @@ describe('ErrorRepository', () => {
     test('should handle edge cases with zero and negative codes', () => {
       errorRepo.addError(0, 'Zero Error');
       errorRepo.addError(-1, 'Negative Error');
-      
+
       expect(errorRepo.translate(0)).toBe('Zero Error');
       expect(errorRepo.translate(-1)).toBe('Negative Error');
     });

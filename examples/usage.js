@@ -63,12 +63,12 @@ class ApiClient {
   async fetchData(url) {
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         const errorMessage = this.errorRepo.translate(response.status);
         throw new Error(`API Error ${response.status}: ${errorMessage}`);
       }
-      
+
       return await response.json();
     } catch (error) {
       if (error.message.includes('fetch')) {
@@ -140,13 +140,13 @@ function errorMiddleware(errorRepo) {
   return (err, req, res, next) => {
     const code = err.code || 500;
     const message = errorRepo.translate(code);
-    
+
     res.status(code >= 400 && code < 600 ? code : 500).json({
       error: {
         code: code,
         message: message,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   };
 }
